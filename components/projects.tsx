@@ -15,14 +15,14 @@ const projects = [
     video: "/videos/acm-nagpur-preview.mp4", // Short preview video
     technologies: ["Next.js", "MongoDB", "Express.js", "Node.js", "Tailwind CSS", "JWT Authentication", "Cloudinary"],
     liveUrl: "https://acm-nagpur.vercel.app/",
-    githubUrl: "https://github.com/yourusername/acm-nagpur-website",
+    githubUrl: "https://github.com/Hackur45/acm-nagpur",
   },
   {
     "title": "Minimalist Developer",
     "description": "A web app providing essential web development tools like image generation, background removal, and content generation, all in a minimal and intuitive interface.",
     video : "/videos/minimalist-developer.mp4",
     "technologies": ["Next.js", "MongoDB", "Hugging Face API","remove-bg api","Firebase","gemini", "Tailwind CSS"],
-    "liveUrl": "https://example.com",
+    "liveUrl": "https://minimalist-developer.vercel.app",
     "githubUrl": "https://github.com/Hackur45/minimalist-developer"
   },
   {
@@ -32,7 +32,7 @@ const projects = [
     video: "/videos/lambodar-preview.mp4", 
     technologies: ["React", "Tailwind CSS", "Nodemailer", "Google APIs"],
     liveUrl: "https://lambodardebt.netlify.app/",
-    githubUrl: "https://github.com/yourusername/lambodar-debt",
+    githubUrl: "https://github.com/Hackur45/lambodardebts",
   },
   {
     title: "Voting Application Backend",
@@ -46,17 +46,17 @@ const projects = [
     title: "Personal Portfolio",
     description:
       "A sleek personal portfolio website showcasing projects, skills, and experience, built with modern web technologies.",
-    video: "/videos/mg-portfolio.mp4", // Short preview video
+    video: "/videos/mg-portfolio.mp4",
     technologies: ["Next.js", "Tailwind CSS", "Framer Motion", "Vercel"],
     liveUrl: "https://example.com",
-    githubUrl: "https://github.com/yourusername/portfolio",
+    githubUrl: "https://github.com/Hackur45/mg-portfolio",
   },
   {
     title: "Automated Research Document Generator",
     description:
       "A work-in-progress tool that automates research paper creation using web scraping and AI-driven content generation.",
-    image: "/images/research.webp", // No video, use a placeholder
-    technologies: ["Python", "BeautifulSoup", "OpenAI API", "Flask"],
+    image: "/images/research.webp", 
+    technologies: ["Python", "Grook AI", "OpenAI API", "Flask"],
     githubUrl: "https://github.com/yourusername/research-doc-generator",
   },
 ];
