@@ -48,7 +48,7 @@ const projects = [
       "A sleek personal portfolio website showcasing projects, skills, and experience, built with modern web technologies.",
     video: "/videos/mg-portfolio.mp4",
     technologies: ["Next.js", "Tailwind CSS", "Framer Motion", "Vercel"],
-    liveUrl: "https://example.com",
+    liveUrl: "https://mg-portfolio-liard.vercel.app/",
     githubUrl: "https://github.com/Hackur45/mg-portfolio",
   },
   {
