@@ -38,7 +38,7 @@ export default function Hero() {
         </h1>
         <h2 className="text-2xl md:text-4xl font-semibold text-muted-foreground mb-6">
           <Typewriter
-            words={["Full Stack Developer", "Competitive Programmer"]}
+            words={["Full Stack Developer", "Competitive Programmer","Also Hackur... 😁"]}
             loop={true}
             cursor
             cursorStyle="|"
