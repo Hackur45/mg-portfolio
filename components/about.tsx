@@ -48,8 +48,8 @@ export default function About() {
           >
             <h3 className="text-2xl font-bold mb-4">Hello there!</h3>
             <p className="text-muted-foreground mb-6">
-              I&apos;m a 3rd-year undergraduate student pursuing a Bachelor&apos;s degree in Computer Science at
-              University of Technology. My passion lies in creating elegant, efficient, and user-friendly web
+              I&apos;m a 3rd-year undergraduate student pursuing a Bachelor&apos;s degree in Information Technology at
+              Ramdeobaba College of Engineering, Nagpur. My passion lies in creating elegant, efficient, and user-friendly web
               applications that solve real-world problems.
             </p>
             <p className="text-muted-foreground mb-6">
