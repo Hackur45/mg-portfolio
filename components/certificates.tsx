@@ -8,13 +8,21 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 const certificates = [
+  // {
+  //   title: "AWS Certified Cloud Practitioner",
+  //   issuer: "Amazon Web Services",
+  //   date: "June 2025",
+  //   description: "Foundational understanding of AWS Cloud services, security, architecture, pricing, and support.",
+  //   image: "/images/aws-logo.png",
+  //   url: "https://example.com/certificate1",
+  // },
   {
-    title: "AWS Certified Cloud Practitioner",
-    issuer: "Amazon Web Services",
-    date: "June 2025",
-    description: "Foundational understanding of AWS Cloud services, security, architecture, pricing, and support.",
-    image: "/images/aws-logo.png",
-    url: "https://example.com/certificate1",
+    title: "JOY OF COMPUTING USING PYTHON",
+    issuer: "NPTEL, IIT ROPAR",
+    date: "JAN-APRIL 2024",
+    description: "Completed an 8-week course focused on Python programming, problem-solving, and computational thinking.",
+    image: "/images/nptel_logo.png",
+    url: "https://drive.google.com/file/d/1FtQnZe0D4xElYWtMF3K5Ylp-cToN-wXl/view",
   },
   {
     title: "React Basics",
@@ -53,7 +61,7 @@ const certificates = [
 
 const activities = [
   {
-    title: "Web Developer - Lambodar Debt Solution",
+    title: "Web Developer - RD Electricals, Aurangabad, Maharashtra",
     organization: "Remote",
     date: "January 2024",
     description: "Developed and maintained the Lambodar Debt Solution website, integrating job applications and bank-specific service pages.",
