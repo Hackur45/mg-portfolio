@@ -1,7 +1,8 @@
 // hooks/useCodingStats.ts
-import { useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 
 export interface PlatformStats {
+  globalRank: ReactNode
   name: string
   solved: number
   total: number
