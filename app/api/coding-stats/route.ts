@@ -1,31 +1,75 @@
 import { NextResponse } from "next/server"
 
+interface CodeforcesUser {
+  maxRating?: number
+  rank?: string
+}
+
+interface CodeforcesSubmission {
+  verdict: string
+  problem: {
+    contestId: number
+    index: string
+    rating?: number
+  }
+}
+
+interface LeetCodeACSubmission {
+  difficulty: string
+  count: number
+  submissions: number
+}
+
+interface LeetCodeAllQuestionsCount {
+  difficulty: string
+  count: number
+}
+
+interface LeetCodeBadge {
+  id: string
+  displayName: string
+  icon: string
+  creationDate: string
+}
+
+interface LeetCodeUser {
+  profile: {
+    ranking: number
+  }
+  submitStatsGlobal: {
+    acSubmissionNum: LeetCodeACSubmission[]
+  }
+  badges: LeetCodeBadge[]
+}
+
 export async function GET() {
   try {
-    // --- Codeforces Data ---
+    // --- Codeforces ---
     const [cfInfoRes, cfSubRes] = await Promise.all([
       fetch("https://codeforces.com/api/user.info?handles=mandargurjar"),
       fetch("https://codeforces.com/api/user.status?handle=mandargurjar"),
     ])
 
-    const cfInfo = await cfInfoRes.json()
-    const cfSub = await cfSubRes.json()
+    const cfInfoData = await cfInfoRes.json()
+    const cfSubData = await cfSubRes.json()
 
-    const cfUser = cfInfo.result?.[0]
-    const submissions = cfSub.result ?? []
+    const cfUser: CodeforcesUser = cfInfoData.result?.[0]
+    const submissions: CodeforcesSubmission[] = cfSubData.result ?? []
 
-    const successfulProblems = new Map<string, number>() // to also collect rating
-    submissions.forEach((sub: any) => {
+    const successfulProblems = new Map<string, number>()
+    submissions.forEach((sub) => {
       if (sub.verdict === "OK") {
         const id = `${sub.problem.contestId}-${sub.problem.index}`
         if (!successfulProblems.has(id)) {
-          successfulProblems.set(id, sub.problem.rating || 0)
+          successfulProblems.set(id, sub.problem.rating ?? 0)
         }
       }
     })
 
-    // Difficulty Slab (for Codeforces only)
-    let easy = 0, medium = 0, hard = 0
+    // Difficulty slab (Codeforces only)
+    let easy = 0,
+      medium = 0,
+      hard = 0
     for (const rating of successfulProblems.values()) {
       if (rating <= 800) easy++
       else if (rating <= 1500) medium++
@@ -35,13 +79,13 @@ export async function GET() {
     const codeforces = {
       name: "Codeforces",
       solved: successfulProblems.size,
-      total: 0, // not available
-      globalRank : "",
-      rating: `Max Rating ${cfUser?.maxRating || "N/A"}`,
-      rank: cfUser?.rank || "Unrated",
+      total: 0,
+      globalRank: "",
+      rating: `Max Rating ${cfUser?.maxRating ?? "N/A"}`,
+      rank: cfUser?.rank ?? "Unrated",
     }
 
-    // --- LeetCode Data ---
+    // --- LeetCode ---
     const leetQuery = {
       query: `
         query getUserProfile($username: String!) {
@@ -57,6 +101,7 @@ export async function GET() {
               acSubmissionNum {
                 difficulty
                 count
+                submissions
               }
             }
             badges {
@@ -78,36 +123,35 @@ export async function GET() {
     })
 
     const lcData = await lcRes.json()
-    const user = lcData.data?.matchedUser
+
+    const user: LeetCodeUser = lcData.data?.matchedUser
     const acCounts = user?.submitStatsGlobal?.acSubmissionNum ?? []
 
-    const easyLc = acCounts.find((d: any) => d.difficulty === "Easy")?.count || 0
-    const mediumLc = acCounts.find((d: any) => d.difficulty === "Medium")?.count || 0
-    const hardLc = acCounts.find((d: any) => d.difficulty === "Hard")?.count || 0
+    const easyLc = acCounts.find((d) => d.difficulty === "Easy")?.count ?? 0
+    const mediumLc = acCounts.find((d) => d.difficulty === "Medium")?.count ?? 0
+    const hardLc = acCounts.find((d) => d.difficulty === "Hard")?.count ?? 0
 
     const totalSolvedLc = easyLc + mediumLc + hardLc
-    const allQuestions = lcData.data?.allQuestionsCount ?? []
-    const totalQuestions = allQuestions.reduce((sum: number, item: any) => sum + item.count, 0)
+    const allQuestions: LeetCodeAllQuestionsCount[] = lcData.data?.allQuestionsCount ?? []
+    const totalQuestions = allQuestions.reduce((sum, item) => sum + item.count, 0)
 
     const leetcode = {
       name: "LeetCode",
       solved: totalSolvedLc,
       total: totalQuestions,
-      globalRank: user.profile.ranking || "Unranked",
+      globalRank: user?.profile?.ranking ?? "Unranked",
       rank: user?.profile?.ranking
-        ? `Top ${(user.profile.ranking / 1000000 * 100).toFixed(2)}%`
+        ? `Top ${(user.profile.ranking / 1000000) * 100}%`
         : "Unranked",
     }
 
-    // Combined difficulty summary
     const problemCategories = [
       { name: "Easy", count: easyLc + easy },
       { name: "Medium", count: mediumLc + medium },
       { name: "Hard", count: hardLc + hard },
     ]
 
-    // LeetCode Badges
-    const badges = (user?.badges ?? []).map((badge: any) => ({
+    const badges = (user?.badges ?? []).map((badge) => ({
       id: badge.id,
       name: badge.displayName,
       icon: badge.icon.startsWith("http") ? badge.icon : `https://leetcode.com${badge.icon}`,
