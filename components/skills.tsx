@@ -28,7 +28,7 @@ const skillCategories = [
   {
     title: "Other",
     icon: <Layers className="h-8 w-8 text-primary" />,
-    skills: ["Responsive Design", "UI/UX", "Testing", "nginx", "ngrok", "ChatGpt"],
+    skills: ["Responsive Design", "Testing", "nginx", "ngrok", "ChatGpt"],
   },
 ]
 
