@@ -16,7 +16,7 @@ export function AnimatedCounter({ to }: { to: number }) {
       },
     })
     return () => controls.stop()
-  }, [to])
+  }, [count,to])
 
   return <>{display}+</>
 }
