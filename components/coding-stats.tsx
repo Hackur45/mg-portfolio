@@ -158,10 +158,13 @@ export default function CodingStats() {
                           key={badge.id}
                           className="flex items-center justify-center sm:justify-start gap-4 px-6 py-4 border rounded-xl shadow-md bg-muted w-full"
                         >
-                          <img
+                          <Image
                             src={badge.icon}
                             alt={badge.name}
-                            className="h-16 w-16 object-contain"
+                            width={64}
+                            height={64}
+                            className="object-contain"
+                            style={{ height: "4rem", width: "4rem" }} // h-16 w-16 equivalent
                           />
                           <div className="text-center sm:text-left">
                             <div className="text-base font-semibold">{badge.name}</div>
