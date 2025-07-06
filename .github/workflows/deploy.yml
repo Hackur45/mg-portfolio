@@ -1,0 +1,72 @@
+name: Deploy Next.js to EC2
+
+on:
+  push:
+    branches:
+      - main # This workflow runs when changes are pushed to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # Use a GitHub-hosted runner for the CI/CD pipeline
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # IMPORTANT: Use the same Node.js version as on your EC2 instance or compatible
+          cache: 'npm' # Cache npm dependencies for faster subsequent runs
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Next.js application
+        run: npm run build
+        # Note: This build runs on the GitHub Actions runner.
+        # If your build process requires specific NEXT_PUBLIC_ env vars at build-time,
+        # you might need to pass them here like:
+        # env:
+        #   NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+        # Server-side env vars like DATABASE_URL are read directly on EC2 from .env.production.
+
+      - name: Archive build artifacts
+        run: tar -czf nextjs-app.tar.gz .next/ public/ package.json package-lock.json # Add any other essential files for deployment
+        # This creates a compressed archive of only the necessary files for deployment
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3 # A popular GitHub Action for SSH deployments
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Navigate to your application's root directory on EC2
+            cd /var/www/nextjs-app
+
+            # 1. Clean up existing files (important for fresh deployments, but consider backup for critical apps)
+            # rm -rf .next/ public/ node_modules/ # Uncomment if you want a cleaner slate, but be cautious
+            # For this setup, we'll overwrite as git pull and npm install will handle changes.
+
+            # 2. Pull the latest code from GitHub
+            # This is crucial for getting the new .env.production if it's in your repo,
+            # or ensuring the .gitignore is respected for your code
+            git pull origin main
+
+            # 3. Reinstall dependencies (in case package.json/lock changed)
+            # This command should be run in the /var/www/nextjs-app directory
+            npm install --production # --production installs only production dependencies
+
+            # 4. Rebuild the Next.js application on the EC2 instance
+            # This uses the env vars from .env.production on EC2
+            npm run build
+
+            # 5. Restart the PM2 process
+            # This ensures your application picks up the new code and any updated environment variables.
+            pm2 restart ${{ secrets.PM2_APP_NAME }}
+
+            # 6. Save PM2 process list (ensures the process starts on server reboot)
+            pm2 save
+
+            echo "Deployment successful on EC2!"
