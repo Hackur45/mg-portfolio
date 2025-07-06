@@ -3,96 +3,58 @@ name: Deploy Next.js App to EC2
 on:
   push:
     branches:
-      - main # Or your deployment branch, e.g., 'master'
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20' # Ensure this matches your EC2 Node.js version if possible
+    - name: Deploy and Restart Application on EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22 # Default SSH port, adjust if yours is different
+        script: |
+          set -e # Exit immediately if any command fails
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        run: echo "cache_dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+          # Navigate to your application's deployment directory
+          # Ensure this path matches where your app is on EC2
+          cd /var/www/nextjs-app
 
-      - name: Cache npm dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.cache_dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          echo "Ensuring clean Git state on EC2: discarding local changes and untracked files..."
+          git reset --hard HEAD # Discard any local modifications to tracked files
+          git clean -fd          # Remove untracked files and directories
 
-      - name: Build Next.js app (on GitHub Actions runner)
-        # This step is good for quick CI validation, but the primary build for deploy happens on EC2
-        run: |
+          echo "Pulling latest code from Git (for consistency)..."
+          git pull origin main
+
+          # Install ALL Node.js dependencies for both build and runtime on EC2
+          # Crucial: DO NOT use --production here, as devDependencies are needed for 'npm run build'
+          echo "Installing ALL Node.js dependencies for build and runtime on EC2..."
           npm install
+
+          echo "Building Next.js application on EC2..."
           npm run build
 
-      - name: Copy build artifacts to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: ".next/,public/,package.json,package-lock.json,next.config.ts,tsconfig.json,app/,components/,hooks/,lib/,images/,eslint.config.mjs,postcss.config.mjs,tailwind.config.ts,README.md,LICENSE,components.json,next-env.d.ts"
-          target: "/var/www/nextjs-app"
+          # Delete the old PM2 process if it exists to ensure a clean restart with updated configurations
+          echo "Deleting old PM2 process '${{ secrets.PM2_APP_NAME }}' if it exists..."
+          pm2 delete ${{ secrets.PM2_APP_NAME }} || true # `|| true` prevents script from failing if process doesn't exist
 
-      - name: Install PM2 (if not already installed on EC2)
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            if ! command -v pm2 &> /dev/null
-            then
-                echo "PM2 not found, installing globally..."
-                npm install pm2 -g
-            else
-                echo "PM2 is already installed."
-            fi
+          # Start the Next.js application using PM2 with robust settings
+          # The `-- run start` ensures PM2 executes the 'start' script defined in package.json
+          echo "Starting PM2 process '${{ secrets.PM2_APP_NAME }}' with restart limits..."
+          pm2 start npm --name "${{ secrets.PM2_APP_NAME }}" \
+            --max-restarts 5 \
+            -- run start # Arguments for `npm run start` go after `--`
 
-      - name: Deploy and Restart Application on EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            set -e # Exit immediately if any command fails
+          # Ensure PM2 saves its current process list for persistence across server reboots
+          echo "Saving PM2 process list..."
+          pm2 save
 
-            cd /var/www/nextjs-app
-
-            echo "Pulling latest code from Git (for consistency)..."
-            git pull origin main
-
-            # *** CRITICAL FIX: Install ALL dependencies for the build on EC2 ***
-            echo "Installing ALL Node.js dependencies for build and runtime on EC2..."
-            npm install # NO --production here!
-
-            echo "Building Next.js application on EC2..."
-            npm run build
-
-            # Delete the old PM2 process if it exists to apply new parameters properly
-            echo "Deleting old PM2 process '${{ secrets.PM2_APP_NAME }}' if it exists..."
-            pm2 delete ${{ secrets.PM2_APP_NAME }} || true
-
-            # *** CRITICAL FIX: Correct PM2 start command syntax for stability ***
-            echo "Starting PM2 process '${{ secrets.PM2_APP_NAME }}' with restart limits..."
-            pm2 start npm --name "${{ secrets.PM2_APP_NAME }}" \
-              --max-restarts 5 \
-              -- run start # Arguments for `npm run start` go after --
-
-            # Ensure PM2 saves its current process list for persistence across reboots
-            echo "Saving PM2 process list..."
-            pm2 save
-
-            echo "Deployment successful on EC2!"
+          echo "Deployment successful on EC2!"
