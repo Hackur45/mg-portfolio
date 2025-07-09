@@ -55,7 +55,7 @@ export default function Hero() {
             View My Work
           </Button>
           <Button variant="outline" size="lg" asChild>
-            <a href="/Mandar_Resume_v4.pdf" target="_blank" rel="noopener noreferrer">
+            <a href="/Mandar_RESUME_v5.pdf" target="_blank" rel="noopener noreferrer">
               Download Resume
             </a>
           </Button>
