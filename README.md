@@ -227,6 +227,24 @@ Here are some common issues encountered during this setup and their resolutions.
 
 -----
 
+## Credits
+
+- **Base Frontend**: This portfolio's frontend design is based on a template generated using [v0.dev](https://v0.dev), which provided a clean and well-structured starting point for the UI.
+- **Cloud Configuration**: All deployment tasks, environment setup, hosting, and domain configurations were handled by me — Mandar Gurjar.
+- **Backend Features**:
+  - **Contact Section**: I developed the backend logic to handle form submissions and manage incoming messages effectively.
+  - **Competitive Programming Section**: This section dynamically displays profile stats, currently integrated with a limited number of platforms.
+
+### About the Stats Repository
+
+The data for the Competitive Programming section is intended to be powered by [your-stats-repo](https://github.com/Hackur45/data-collection), an open-source project aimed at collecting real-time stats from various competitive programming platforms. As of now, it supports only two platforms (LeetCode and Codeforces), so it's not yet fully integrated into the live portfolio.
+
+**I welcome contributions** to this repository — whether it's adding support for new platforms like CodeChef, AtCoder, HackerRank, etc., or improving the existing codebase. If you're interested in open-source and competitive programming, this is a great project to get involved with. Your help would accelerate full integration into the portfolio.
+
+---
+
+> Built with care and curiosity by Mandar Gurjar
+
 ## License
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
