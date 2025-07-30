@@ -243,9 +243,8 @@ The data for the Competitive Programming section is intended to be powered by [y
 
 ---
 
-> Built with care and curiosity by Mandar Gurjar
-
 ## License
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
 
+> Built with care and curiosity by Mandar Gurjar
