@@ -237,7 +237,7 @@ Here are some common issues encountered during this setup and their resolutions.
 
 ### About the Stats Repository
 
-The data for the Competitive Programming section is intended to be powered by [your-stats-repo](https://github.com/Hackur45/competitive-programming-stats-collector), an open-source project aimed at collecting real-time stats from various competitive programming platforms. As of now, it supports only two platforms (LeetCode and Codeforces), so it's not yet fully integrated into the live portfolio.
+The data for the Competitive Programming section is intended to be powered by [competitive-programming-stats-collector](https://github.com/Hackur45/competitive-programming-stats-collector), an open-source project aimed at collecting real-time stats from various competitive programming platforms. As of now, it supports only two platforms (LeetCode and Codeforces), so it's not yet fully integrated into the live portfolio.
 
 **I welcome contributions** to this repository — whether it's adding support for new platforms like CodeChef, AtCoder, HackerRank, etc., or improving the existing codebase. If you're interested in open-source and competitive programming, this is a great project to get involved with. Your help would accelerate full integration into the portfolio.
 
