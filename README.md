@@ -32,7 +32,6 @@ Welcome to my portfolio repository! This project showcases my work, skills, and 
 * Showcases my projects and professional experience
 * Fully responsive and adaptive design for various devices
 * Built with cutting-edge web technologies
-* [Add any other specific features, e.g., "Interactive portfolio items," "Contact form functionality"]
 
 ## 🛠️ Tech Stack
 
