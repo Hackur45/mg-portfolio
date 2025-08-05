@@ -137,7 +137,6 @@ Below are proofs demonstrating the application's live status and the automated d
 *This terminal screenshot shows the PM2 process manager running on the EC2 instance. The `mg-portfolio` application is listed as an active process, indicating that the application is being managed and kept alive by PM2, ensuring its continuous operation.*
 
 ### 4\. Nginx Service Status (SSH Terminal)
-
 ![alt text](images/nginx_1.jpg)
 *This screenshot shows the status of the Nginx service on the EC2 instance. The service is active and running, confirming that Nginx is properly set up to act as a reverse proxy for the application.*
 
